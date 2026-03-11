@@ -1,0 +1,840 @@
+{
+  "info": {
+    "_postman_id": "21f7fe26-f401-4717-b248-b1a76e905b6b",
+    "name": "Exercício M13",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52982282",
+    "_collection_link": "https://go.postman.co/collection/52982282-21f7fe26-f401-4717-b248-b1a76e905b6b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Cadastros Usuários",
+      "item": [
+        {
+          "name": "Cadastrar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve validar se o status code é 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deve validar a mensagem de sucesso\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Usuário criado com sucesso.\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Validar que a mensagem de erro está presente\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{$randomFullName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"senha123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}users",
+              "host": [
+                "{{baseUrl}}users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Alterar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code é 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Validar mensagem de sucesso\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Usuário atualizado com sucesso.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Usuário Editado 2\",\n  \"email\": \"usuario.novo@email.com\",\n  \"password\": \"novaSenha123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}users/3",
+              "host": [
+                "{{baseUrl}}users"
+              ],
+              "path": [
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Alterar Usuário - Cenário Negativo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code é 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Validar mensagem de erro\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Usuário não encontrado.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Usuário Editado 2\",\n  \"email\": \"usuario.novo@email.com\",\n  \"password\": \"novaSenha123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}users/13",
+              "host": [
+                "{{baseUrl}}users"
+              ],
+              "path": [
+                "13"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deletar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const status = pm.response.code;\r",
+                  "const responseText = pm.response.text();\r",
+                  "\r",
+                  "pm.test(\"Status code deve ser 200 (Sucesso) ou 404 (Não encontrado)\", function () {\r",
+                  "    pm.expect(status).to.be.oneOf([200, 404]);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Validar mensagem de resposta\", function () {\r",
+                  "    if (status === 200) {\r",
+                  "    \r",
+                  "        pm.expect(responseText).to.include(\"Usuário removido com sucesso.\");\r",
+                  "    } else if (status === 404) {\r",
+                  "\r",
+                  "        pm.expect(responseText).to.include(\"Usuário não encontrado\"); \r",
+                  "    } else {\r",
+                  "\r",
+                  "        pm.expect(true).to.be.false;\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}users/7",
+              "host": [
+                "{{baseUrl}}users"
+              ],
+              "path": [
+                "7"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Login",
+      "item": [
+        {
+          "name": "Login usuário Padrão",
+          "item": [
+            {
+              "name": "Login usuário Padrão",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Validar o status code 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Validar que isAdmin é false\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.isAdmin).to.be.false;",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"usuario@teste.com\",\n  \"password\": \"user123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}login",
+                  "host": [
+                    "{{baseUrl}}login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login usuário Padrão - Credenciais Inválidas",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Validar o status code 401\", function () {",
+                      "    pm.response.to.have.status(401);",
+                      "});",
+                      "",
+                      "pm.test(\"Validar que o token NÃO foi retornado\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData).to.not.have.property(\"token\");",
+                      "});",
+                      "",
+                      "pm.test(\"Validar que a mensagem de erro está presente\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData).to.have.property(\"message\");",
+                      "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "accept",
+                    "value": "application/json",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": false
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"email\": \"usuario_invalido@teste.com\", \"password\": \"senhaErrada123\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}login",
+                  "host": [
+                    "{{baseUrl}}login"
+                  ]
+                },
+                "description": "Generated from cURL: curl -X POST \"{{baseUrl}}login\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{\\\"email\\\": \\\"usuario_invalido@teste.com\\\", \\\"password\\\": \\\"senhaErrada123\\\"}\""
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Login Administrador",
+          "item": [
+            {
+              "name": "Login com usuário administrador",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const tokenGerado = pm.response.json().token\r",
+                      "pm.environment.set(\"token\", tokenGerado);\r",
+                      "\r",
+                      "pm.test(\"Validar o status code 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Validar o campo 'id'\", function () {\r",
+                      "    pm.expect(pm.response.json()).to.have.property('id');\r",
+                      "})"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@biblioteca.com\",\n  \"password\": \"admin123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}login",
+                  "host": [
+                    "{{baseUrl}}login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login com usuário administrador - Cenário Negativo",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const tokenGerado = pm.response.json().token\r",
+                      "pm.environment.set(\"token\", tokenGerado);\r",
+                      "\r",
+                      "pm.test(\"Validar o status code 401\", function () {\r",
+                      "    pm.response.to.have.status(401);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Validar mensagem de erro'\", function () {\r",
+                      "    pm.expect(pm.response.text()).to.include(\"Email ou senha incorretos.\");\r",
+                      "})"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admini@biblioteca.com\",\n  \"password\": \"admin123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}login",
+                  "host": [
+                    "{{baseUrl}}login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Listar itens da cesta",
+      "item": [
+        {
+          "name": "Listar itens da cesta - Positivo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const tokenGerado = pm.response.json().token",
+                  "pm.environment.set(\"token\", tokenGerado);",
+                  "",
+                  "pm.test(\"Validar o status code 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Validar que o corpo da resposta contém userId\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"userId\");",
+                  "    pm.expect(jsonData.userId).to.be.a(\"number\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json",
+                "disabled": false
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [],\n  \"total\": 0,\n  \"userId\": 1,\n  \"summary\": {\n    \"totalItems\": 0,\n    \"availableItems\": 0,\n    \"unavailableItems\": 0\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}basket/1",
+              "host": [
+                "{{baseUrl}}basket"
+              ],
+              "path": [
+                "1"
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET \"{{baseUrl}}basket/1\" -H \"accept: application/json\" -H \"Authorization: Bearer {{token}}\" -d '{\"items\":[],\"total\":0,\"userId\":1,\"summary\":{\"totalItems\":0,\"availableItems\":0,\"unavailableItems\":0}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Listar itens da cesta - Negativo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validar que o status code não é 200 (acesso negado ou não encontrado)\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([401, 403, 404]);",
+                  "});",
+                  "",
+                  "pm.test(\"Validar que a resposta contém mensagem de erro\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"message\");",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json",
+                "disabled": false
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [],\n  \"total\": 0,\n  \"userId\": 999,\n  \"summary\": {\n    \"totalItems\": 0,\n    \"availableItems\": 0,\n    \"unavailableItems\": 0\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}basket/999",
+              "host": [
+                "{{baseUrl}}basket"
+              ],
+              "path": [
+                "999"
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET \"{{baseUrl}}basket/999\" -H \"accept: application/json\" -H \"Authorization: Bearer token_invalido\" -d '{\"items\":[],\"total\":0,\"userId\":999,\"summary\":{\"totalItems\":0,\"availableItems\":0,\"unavailableItems\":0}}'"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Catálogo de livros",
+      "item": [
+        {
+          "name": "Listar Categorias Disponíveis",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const status = pm.response.code;",
+                  "const responseJson = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code deve ser 200\", function () {",
+                  "    pm.expect(status).to.equal(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Resposta deve ser um array\", function () {",
+                  "    const lista = Array.isArray(responseJson) ? responseJson : (responseJson.books || responseJson.data || responseJson);",
+                  "    pm.expect(Array.isArray(lista)).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Itens devem ter campos esperados\", function () {",
+                  "    const lista = Array.isArray(responseJson) ? responseJson : (responseJson.books || responseJson.data || responseJson);",
+                  "    if (lista.length > 0) {",
+                  "        lista.forEach(function(item) {",
+                  "            pm.expect(item).to.have.property('id');",
+                  "        });",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}books",
+              "host": [
+                "{{baseUrl}}books"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reserva de Livros",
+      "item": [
+        {
+          "name": "Cancelar Reserva",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validar se o status code é 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deve validar a mensagem de sucesso\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Reserva criada com sucesso.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}reservations/3",
+              "host": [
+                "{{baseUrl}}reservations"
+              ],
+              "path": [
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Nova Reserva",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validar se o status code é 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deve validar a mensagem de sucesso\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Reserva criada com sucesso.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookId\": 8\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/reservations",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "reservations"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const token = pm.environment.get(\"token\");",
+          "",
+          "function isTokenExpired(token) {",
+          "    if (!token) return true;",
+          "    try {",
+          "        const payload = JSON.parse(atob(token.split('.')[1]));",
+          "        const now = Math.floor(Date.now() / 1000);",
+          "        return payload.exp && payload.exp < now;",
+          "    } catch (e) {",
+          "        return true;",
+          "    }",
+          "}",
+          "",
+          "if (isTokenExpired(token)) {",
+          "    const baseUrl = pm.environment.get(\"baseUrl\");",
+          "",
+          "    pm.sendRequest({",
+          "        url: baseUrl + \"login\",",
+          "        method: \"POST\",",
+          "        header: {",
+          "            \"Content-Type\": \"application/json\",",
+          "            \"accept\": \"application/json\"",
+          "        },",
+          "        body: {",
+          "            mode: \"raw\",",
+          "            raw: JSON.stringify({",
+          "                email: \"admin@biblioteca.com\",",
+          "                password: \"admin123\"",
+          "            })",
+          "        }",
+          "    }, function (err, res) {",
+          "        if (!err && res.code === 200) {",
+          "            const newToken = res.json().token;",
+          "            pm.environment.set(\"token\", newToken);",
+          "            console.log(\"Token renovado automaticamente!\");",
+          "        } else {",
+          "            console.error(\"Erro ao renovar token:\", err || res.json());",
+          "        }",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ]
+}
